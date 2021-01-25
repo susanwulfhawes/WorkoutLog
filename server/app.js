@@ -1,15 +1,19 @@
+
+require("dotenv").config();
 let express = require('express');
 let app = express();
 let sequelize = require("./db");
-let workout = require('./controllers/workoutlogcontroller');
+let log = require('./controllers/workoutlogcontroller');
 let user = require('./controllers/usercontroller');
 
 sequelize.sync();
 //sequelize.sync({force: true})
 
 app.use(express.json());
+
+//app.user(require('./middleware/validate-session'));
 app.use('/user', user);
-app.use('/workout', workout);
+app.use('/log', log);
 
 
 app.listen(3000, function(){

@@ -17,5 +17,5 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         }
     })
-    return Journal;
+    return Log;
 };
