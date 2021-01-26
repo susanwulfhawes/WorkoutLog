@@ -3,7 +3,7 @@ const Log = require('../db').import('../models/log');
 let router = express.Router();
 let validateSession = require('../middleware/validate-session');
 
-router.post('/log', validateSession, function(req, res){
+router.post('/create', validateSession, function(req, res){
     const logEntry = {
         description: req.body.log.description,
         definition: req.body.log.definition,
@@ -16,7 +16,7 @@ router.post('/log', validateSession, function(req, res){
 
 });
 
-router.get('/log', validateSession, (req, res) => {
+router.get('/mineall', validateSession, (req, res) => {
     //res.send('Gets all logs for an individual user.');
     let userid = req.user.id
     Log.findAll({
@@ -26,7 +26,7 @@ router.get('/log', validateSession, (req, res) => {
         .catch(err => res.status(500).json({error: err}))
 });
 
-router.get('/log/:id', validateSession, function(req, res){
+router.get('/mine/:id', validateSession, function(req, res){
     let entryId = req.params.id;
     //res.send(`Gets individual logs by id for an individual user. ${entryId}`);
     Log.findOne({
@@ -36,7 +36,7 @@ router.get('/log/:id', validateSession, function(req, res){
     .catch(err => res.status(500).json({error: err}))
 });
 
-router.put('/log/:id', validateSession, function(req, res){
+router.put('/update/:id', validateSession, function(req, res){
     //res.send('Allows individual logs to be updated by a user.');
     const updateLogEntry = {
         description: req.body.log.description,
@@ -52,7 +52,7 @@ router.put('/log/:id', validateSession, function(req, res){
 });
     
 
-router.delete('/log/:id', validateSession, function(req, res){
+router.delete('/delete/:id', validateSession, function(req, res){
     //res.send('Allows individual logs to be deleted by a user.');
 
 const query = {where: {id: req.params.id, owner_id: req.user.id}};
