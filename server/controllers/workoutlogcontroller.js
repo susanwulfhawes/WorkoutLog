@@ -26,16 +26,40 @@ router.get('/log', validateSession, (req, res) => {
         .catch(err => res.status(500).json({error: err}))
 });
 
-router.get('/log/:id', function(req, res){
-    res.send('Gets individual logs by id for an individual user.');
+router.get('/log/:id', validateSession, function(req, res){
+    let entryId = req.params.id;
+    //res.send(`Gets individual logs by id for an individual user. ${entryId}`);
+    Log.findOne({
+        where: {id: entryId}
+    })
+    .then(logs => res.status(200).json(logs))
+    .catch(err => res.status(500).json({error: err}))
 });
 
-router.put('/log/:id', function(req, res){
-    res.send('Allows individual logs to be updated by a user.');
-});
+router.put('/log/:id', validateSession, function(req, res){
+    //res.send('Allows individual logs to be updated by a user.');
+    const updateLogEntry = {
+        description: req.body.log.description,
+        definition: req.body.log.definition,
+        result: req.body.log.result
+    };
 
-router.delete('/log/:id', function(req, res){
-    res.send('Allows individual logs to be deleted by a user.');
+    const query = {where: {id: req.params.id, owner_id: req.user.id}};
+
+    Log.update(updateLogEntry, query)
+    .then(logs => res.status(200).json(logs))
+    .catch(err => res.status(500).json({error: err}))
+});
+    
+
+router.delete('/log/:id', validateSession, function(req, res){
+    //res.send('Allows individual logs to be deleted by a user.');
+
+const query = {where: {id: req.params.id, owner_id: req.user.id}};
+
+Log.destroy(query)
+        .then(() => res.status(200).json({message: "Log Entry Removed"}))
+        .catch((err) => res.status(500).json({error: err}));
 });
 
 module.exports = router;
